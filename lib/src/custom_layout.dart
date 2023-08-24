@@ -115,7 +115,6 @@ abstract class _CustomLayoutStateBase<T extends _SubSwiper> extends State<T> wit
       } else {
         list.add(_buildItem(i, realIndex, animationValue));
       }
-      print('fucking shit i = $i = ci= ${_currentIndex} ===$realIndex === ${list}');
     }
 
     return GestureDetector(
