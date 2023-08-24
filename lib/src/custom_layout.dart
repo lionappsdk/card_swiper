@@ -1,7 +1,6 @@
 part of 'swiper.dart';
 
-abstract class _CustomLayoutStateBase<T extends _SubSwiper> extends State<T>
-    with SingleTickerProviderStateMixin {
+abstract class _CustomLayoutStateBase<T extends _SubSwiper> extends State<T> with SingleTickerProviderStateMixin {
   late double _swiperWidth;
   late double _swiperHeight;
   late Animation<double> _animation;
@@ -116,6 +115,7 @@ abstract class _CustomLayoutStateBase<T extends _SubSwiper> extends State<T>
       } else {
         list.add(_buildItem(i, realIndex, animationValue));
       }
+      print('fucking shit i = $i = ci= ${_currentIndex} ===$realIndex === ${list}');
     }
 
     return GestureDetector(
@@ -124,7 +124,8 @@ abstract class _CustomLayoutStateBase<T extends _SubSwiper> extends State<T>
       onPanEnd: _onPanEnd,
       onPanUpdate: _onPanUpdate,
       child: ClipRect(
-        child: Center(
+        child: Align(
+          alignment: widget.stackLayoutForceMoveToRight ? Alignment.centerRight : Alignment.center,
           child: _buildContainer(list),
         ),
       ),
@@ -210,9 +211,8 @@ abstract class _CustomLayoutStateBase<T extends _SubSwiper> extends State<T>
   Future<void> _onPanEnd(DragEndDetails details) async {
     if (_lockScroll) return;
 
-    final velocity = widget.scrollDirection == Axis.horizontal
-        ? details.velocity.pixelsPerSecond.dx
-        : details.velocity.pixelsPerSecond.dy;
+    print('_move = ${_animationController.value}');
+    final velocity = widget.scrollDirection == Axis.horizontal ? details.velocity.pixelsPerSecond.dx : details.velocity.pixelsPerSecond.dy;
 
     if (_animationController.value >= 0.75 || velocity > 500.0) {
       if (_currentIndex <= 0 && !widget.loop) {
@@ -232,20 +232,13 @@ abstract class _CustomLayoutStateBase<T extends _SubSwiper> extends State<T>
   void _onPanStart(DragStartDetails details) {
     if (_lockScroll) return;
     _currentValue = _animationController.value;
-    _currentPos = widget.scrollDirection == Axis.horizontal
-        ? details.globalPosition.dx
-        : details.globalPosition.dy;
+    _currentPos = widget.scrollDirection == Axis.horizontal ? details.globalPosition.dx : details.globalPosition.dy;
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
     if (_lockScroll) return;
     var value = _currentValue +
-        ((widget.scrollDirection == Axis.horizontal
-                    ? details.globalPosition.dx
-                    : details.globalPosition.dy) -
-                _currentPos) /
-            _swiperWidth /
-            2;
+        ((widget.scrollDirection == Axis.horizontal ? details.globalPosition.dx : details.globalPosition.dy) - _currentPos) / _swiperWidth / 2;
     // no loop ?
     if (!widget.loop) {
       if (widget.itemCount == 1) {
@@ -322,8 +315,7 @@ class ScaleTransformBuilder extends TransformBuilder<double> {
 }
 
 class OpacityTransformBuilder extends TransformBuilder<double> {
-  OpacityTransformBuilder({required List<double> values})
-      : super(values: values);
+  OpacityTransformBuilder({required List<double> values}) : super(values: values);
 
   @override
   Widget build(int i, double animationValue, Widget widget) {
@@ -336,8 +328,7 @@ class OpacityTransformBuilder extends TransformBuilder<double> {
 }
 
 class RotateTransformBuilder extends TransformBuilder<double> {
-  RotateTransformBuilder({required List<double> values})
-      : super(values: values);
+  RotateTransformBuilder({required List<double> values}) : super(values: values);
 
   @override
   Widget build(int i, double animationValue, Widget widget) {
@@ -350,8 +341,7 @@ class RotateTransformBuilder extends TransformBuilder<double> {
 }
 
 class TranslateTransformBuilder extends TransformBuilder<Offset> {
-  TranslateTransformBuilder({required List<Offset> values})
-      : super(values: values);
+  TranslateTransformBuilder({required List<Offset> values}) : super(values: values);
 
   @override
   Widget build(int i, double animationValue, Widget widget) {
@@ -444,9 +434,7 @@ class _CustomLayoutState extends _CustomLayoutStateBase<_CustomLayoutSwiper> {
     final builders = widget.option.builders;
 
     Widget child = SizedBox(
-        width: widget.itemWidth ?? double.infinity,
-        height: widget.itemHeight ?? double.infinity,
-        child: widget.itemBuilder!(context, realIndex));
+        width: widget.itemWidth ?? double.infinity, height: widget.itemHeight ?? double.infinity, child: widget.itemBuilder!(context, realIndex));
 
     for (var i = builders.length - 1; i >= 0; --i) {
       final builder = builders[i];

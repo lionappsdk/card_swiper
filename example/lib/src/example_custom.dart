@@ -98,7 +98,6 @@ class _ExampleCustomState extends State<ExampleCustom> {
         ],
       );
     _fade = 1.0;
-    _currentIndex = 0;
     _curve = Curves.ease;
     _scale = 0.8;
     _autoplay = false;
@@ -107,7 +106,8 @@ class _ExampleCustomState extends State<ExampleCustom> {
     _radius = 10.0;
     _padding = 0.0;
     _loop = true;
-    _itemCount = 3;
+    _itemCount = 6;
+    _currentIndex = _itemCount - 1;
     _autoplayDelay = 3000;
     _viewportFraction = 0.8;
     _outer = false;
@@ -141,6 +141,7 @@ class _ExampleCustomState extends State<ExampleCustom> {
           _currentIndex = index;
         });
       },
+      stackLayoutForceMoveToRight: true,
       curve: _curve,
       scale: _scale,
       itemWidth: 300.0,
@@ -158,9 +159,7 @@ class _ExampleCustomState extends State<ExampleCustom> {
       axisDirection: _axisDirection,
       indicatorLayout: PageIndicatorLayout.COLOR,
       autoplayDisableOnInteraction: _autoplayDisableOnInteraction,
-      pagination: const SwiperPagination(
-          builder: DotSwiperPaginationBuilder(
-              size: 20.0, activeSize: 20.0, space: 10.0)),
+      pagination: const SwiperPagination(builder: DotSwiperPaginationBuilder(size: 20.0, activeSize: 20.0, space: 10.0)),
     );
   }
 
@@ -214,12 +213,7 @@ class _ExampleCustomState extends State<ExampleCustom> {
                 child: FormSelect<SwiperLayout>(
                   placeholder: 'Select layout',
                   value: _layout,
-                  values: const [
-                    SwiperLayout.DEFAULT,
-                    SwiperLayout.STACK,
-                    SwiperLayout.TINDER,
-                    SwiperLayout.CUSTOM
-                  ],
+                  values: const [SwiperLayout.DEFAULT, SwiperLayout.STACK, SwiperLayout.TINDER, SwiperLayout.CUSTOM],
                   valueChanged: (value) {
                     _layout = value;
                     setState(() {});
@@ -230,43 +224,32 @@ class _ExampleCustomState extends State<ExampleCustom> {
                 label: 'scrollDirection',
                 child: Switch(
                     value: _scrollDirection == Axis.horizontal,
-                    onChanged: (value) => setState(() => _scrollDirection =
-                        value ? Axis.horizontal : Axis.vertical)),
+                    onChanged: (value) => setState(() => _scrollDirection = value ? Axis.horizontal : Axis.vertical)),
               ),
               if (_layout == SwiperLayout.STACK)
                 FormWidget(
                   label: 'axisDirection (left <-> right)',
                   child: Switch(
                       value: _axisDirection == AxisDirection.right,
-                      onChanged: (value) => setState(() => _axisDirection =
-                          value ? AxisDirection.right : AxisDirection.left)),
+                      onChanged: (value) => setState(() => _axisDirection = value ? AxisDirection.right : AxisDirection.left)),
                 ),
               FormWidget(
                 label: 'autoplayDisableOnInteraction',
-                child: Switch(
-                    value: _autoplayDisableOnInteraction,
-                    onChanged: (value) =>
-                        setState(() => _autoplayDisableOnInteraction = value)),
+                child: Switch(value: _autoplayDisableOnInteraction, onChanged: (value) => setState(() => _autoplayDisableOnInteraction = value)),
               ),
               //Pannel Begin
               FormWidget(
                 label: 'loop',
-                child: Switch(
-                    value: _loop,
-                    onChanged: (value) => setState(() => _loop = value)),
+                child: Switch(value: _loop, onChanged: (value) => setState(() => _loop = value)),
               ),
               FormWidget(
                 label: 'outer',
-                child: Switch(
-                    value: _outer,
-                    onChanged: (value) => setState(() => _outer = value)),
+                child: Switch(value: _outer, onChanged: (value) => setState(() => _outer = value)),
               ),
               //Pannel Begin
               FormWidget(
                 label: 'autoplay',
-                child: Switch(
-                    value: _autoplay,
-                    onChanged: (value) => setState(() => _autoplay = value)),
+                child: Switch(value: _autoplay, onChanged: (value) => setState(() => _autoplay = value)),
               ),
 
               FormWidget(
@@ -355,14 +338,7 @@ class _ExampleCustomState extends State<ExampleCustom> {
                 child: FormSelect<Curve>(
                   placeholder: 'Select curve',
                   value: _curve,
-                  values: const [
-                    Curves.easeInOut,
-                    Curves.ease,
-                    Curves.bounceInOut,
-                    Curves.bounceOut,
-                    Curves.bounceIn,
-                    Curves.fastOutSlowIn
-                  ],
+                  values: const [Curves.easeInOut, Curves.ease, Curves.bounceInOut, Curves.bounceOut, Curves.bounceIn, Curves.fastOutSlowIn],
                   valueChanged: (value) {
                     _curve = value;
                     setState(() {});
